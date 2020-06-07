@@ -7,13 +7,14 @@ const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
+console.log(outputPath);
 
 const render = require("./lib/htmlRenderer");
 
+//array to collect employee profiles created below
 const employees = [];
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+//Function to start building a team, beginning with manager
 const createTeam = () => {
   console.log("Please build your team.");
   inquirer
@@ -40,6 +41,7 @@ const createTeam = () => {
       },
     ])
     .then((answers) => {
+      //create a new manager object
       const manager = new Manager(
         answers.name,
         answers.id,
@@ -48,11 +50,13 @@ const createTeam = () => {
       );
       employees.push(manager);
       addTeamMember();
+      // console.log(manager);
     })
     .catch((err) => {
       console.log(err);
     });
 
+  //function to add more employees to the team
   const addTeamMember = () =>
     inquirer
       .prompt([
@@ -68,11 +72,15 @@ const createTeam = () => {
           addIntern();
         } else if (answers.addNew === "Engineer") {
           addEngineer();
-        } else if (answers.add === "I am done adding team members") {
-          render(employees);
+        } else if (answers.addNew === "I am done adding team members") {
+          fs.writeFile(outputPath, render(employees), function (err) {
+            if (err) throw err;
+            console.log("success!");
+          });
         }
       });
 
+  //function to add an Engineer to the team
   const addEngineer = () =>
     inquirer
       .prompt([
@@ -98,6 +106,7 @@ const createTeam = () => {
         },
       ])
       .then((answers) => {
+        //create a new engineer object
         const engineer = new Engineer(
           answers.name,
           answers.id,
@@ -106,12 +115,13 @@ const createTeam = () => {
         );
         employees.push(engineer);
         addTeamMember();
-        console.log(engineer);
+        // console.log(engineer);
       })
       .catch((err) => {
         console.log(err);
       });
 
+  //function to add an Intern to the team
   const addIntern = () =>
     inquirer
       .prompt([
@@ -137,6 +147,7 @@ const createTeam = () => {
         },
       ])
       .then((answers) => {
+        //create a new intern object
         const intern = new Intern(
           answers.name,
           answers.id,
@@ -145,21 +156,12 @@ const createTeam = () => {
         );
         employees.push(intern);
         addTeamMember();
-        console.log(intern);
+        // console.log(intern);
       })
       .catch((err) => {
         console.log(err);
       });
 };
-
-// .then(function (data) {
-//   console.log(data);
-
-//   fs.writeFile("./output/team.html", render(data), function (err) {
-//     if (err) throw err;
-//     console.log("success!");
-//   });
-// });
 
 createTeam();
 
