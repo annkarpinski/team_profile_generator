@@ -16,27 +16,27 @@ const employees = [];
 
 //Function to start building a team, beginning with manager
 const createTeam = () => {
-  console.log("Please build your team.");
+  console.log("Please build your team:");
   inquirer
     .prompt([
       {
         type: "input",
-        message: "What is you manager's name?",
+        message: "What is the manager's name?",
         name: "name",
       },
       {
         type: "input",
-        message: "What is your manager's ID number?",
+        message: "What is the manager's ID number?",
         name: "id",
       },
       {
         type: "input",
-        message: "What is your manager's email address?",
+        message: "What is the manager's email address?",
         name: "email",
       },
       {
         type: "input",
-        message: "What is your manager's office number?",
+        message: "What is the manager's office number?",
         name: "officeNumber",
       },
     ])
@@ -67,12 +67,14 @@ const createTeam = () => {
           choices: ["Engineer", "Intern", "I am done adding team members"],
         },
       ])
+      //loop through to determine which employee type and questions to ask to create intern and engineer objects until user is done adding all team members.
       .then((answers) => {
         if (answers.addNew === "Intern") {
           addIntern();
         } else if (answers.addNew === "Engineer") {
           addEngineer();
         } else if (answers.addNew === "I am done adding team members") {
+          //create html file showing complete team
           fs.writeFile(outputPath, render(employees), function (err) {
             if (err) throw err;
             console.log("success!");
